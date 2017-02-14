@@ -1,0 +1,595 @@
+<!-- website code -->
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Rabin's Game</title>
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <style type="text/css">
+      canvas { border: 5px solid #008000; }
+    </style>
+  </head>
+
+  <body>
+  	<center>
+    <canvas id="canvas" width="800" height="600">
+    </canvas>
+    </center>
+  </body>
+
+</html>
+
+<!-- game code --> 
+<script type="text/javascript">
+
+    //global variables.
+    var canvas = document.getElementById("canvas");
+    var c = canvas.getContext("2d");
+    var currentfig = "lefteye";
+
+    // register event handler 
+    document.addEventListener("keydown", keyPressedHandler, false);
+    canvas.addEventListener("click", clickReporter, false);
+
+    var Hero = {
+      // creating random variables for random position.
+    lerandX: Math.floor((Math.random() * 600) + 1),
+    lerandY: Math.floor((Math.random() * 500) + 1),
+    lebrandY: Math.floor((Math.random() * 500) + 1),
+    lebrandX: Math.floor((Math.random() * 600) + 1),
+    rerandX: Math.floor((Math.random() * 600) + 1),
+    rerandY: Math.floor((Math.random() * 500) + 1),
+    rebrandY: Math.floor((Math.random() * 500) + 1),
+    rebrandX: Math.floor((Math.random() * 600) + 1),
+    nrandX: Math.floor((Math.random() * 600) + 1),
+    nrandY: Math.floor((Math.random() * 500) + 1),
+    mrandX: Math.floor((Math.random() * 600) + 1),
+    mrandY: Math.floor((Math.random() * 500) + 1),
+
+    // left eye movement.
+    leleftHandler: function(){
+      this.lerandX -= 1
+    },
+    leupHandler: function(){
+      this.lerandY -= 1
+    },
+    lerightHandler: function(){
+      this.lerandX += 1    
+    },
+    ledownHandler: function(){
+      this.lerandY += 1    
+    },
+
+      // left eye ball movement.
+    lebleftHandler: function(){
+      this.lebrandX -= 1
+    },
+    lebupHandler: function(){
+      this.lebrandY -= 1
+    },
+    lebrightHandler: function(){
+      this.lebrandX += 1    
+    },
+    lebdownHandler: function(){
+      this.lebrandY += 1    
+    },
+
+      // right eye movement.
+    releftHandler: function(){
+      this.rerandX -= 1
+    },
+    reupHandler: function(){
+      this.rerandY -= 1
+    },
+    rerightHandler: function(){
+      this.rerandX += 1    
+    },
+    redownHandler: function(){
+      this.rerandY += 1    
+    },
+
+      // right eye ball movement.
+    rebleftHandler: function(){
+      this.rebrandX -= 1
+    },
+    rebupHandler: function(){
+      this.rebrandY -= 1
+    },
+    rebrightHandler: function(){
+      this.rebrandX += 1    
+    },
+    rebdownHandler: function(){
+      this.rebrandY += 1    
+    },
+
+      // nose movement.
+    nleftHandler: function(){
+      this.nrandX -= 1
+    },
+    nupHandler: function(){
+      this.nrandY -= 1
+    },
+    nrightHandler: function(){
+      this.nrandX += 1    
+    },
+    ndownHandler: function(){
+      this.nrandY += 1    
+    },
+
+      // mouth movement.
+    mleftHandler: function(){
+      this.mrandX -= 1
+    },
+    mupHandler: function(){
+      this.mrandY -= 1
+    },
+    mrightHandler: function(){
+      this.mrandX += 1    
+    },
+    mdownHandler: function(){
+      this.mrandY += 1    
+    },
+
+
+    drawbackground: function(){
+      // basic background
+          c.fillStyle = '#00FFFF';
+          c.fillRect(0, 0, canvas.width, canvas.height);
+
+          c.fillStyle = '#728C00';
+          c.font = '30px Helvetica';
+          c.fillText('Here are some challanges for you!', 170, 40);
+
+          c.fillStyle = '#728C00';
+          c.font = '15px Helvetica';
+          c.fillText('Press Enter for help', 660, 590);
+
+          c.beginPath();
+          c.arc(400,320, 250, 0, Math.PI * 2, false);
+          c.fillStyle = '#F7E7CE';
+          c.fill();
+    },
+
+    drawmodel: function(){
+        // model
+          c.fillStyle = '#F70D1A';
+          c.font = '10px Helvetica';
+          c.fillText('MODEL', 690, 20)
+
+          c.fillStyle = '#00FFFF';
+          c.fillRect(650, 25, 120, 90);
+          c.strokeStyle = '#008000';
+          c.lineWidth = 3;
+          c.strokeRect(650, 25, 120, 90);
+
+          c.beginPath();
+          c.arc(710,70, 38, 0, Math.PI * 2, false);
+          c.fillStyle = '#F7E7CE';
+          c.fill();
+
+          //left eye
+          c.beginPath();
+          c.arc(695,60, 8, 0, Math.PI * 2, false);
+          c.fillStyle = 'white';
+          c.fill();
+
+          c.beginPath();
+          c.arc(695,60, 2, 0, Math.PI * 2, false);
+          c.fillStyle = 'black';
+          c.fill();
+
+          // right eye
+          c.beginPath();
+          c.arc(725,60, 8, 0, Math.PI * 2, false);
+          c.fillStyle = 'white';
+          c.fill();
+
+          c.beginPath();
+          c.arc(725,60, 2, 0, Math.PI * 2, false);
+          c.fillStyle = 'black';
+          c.fill();
+
+          //nose
+          c.beginPath();
+          c.moveTo(710, 65);
+          c.lineTo(704, 80);
+          c.lineTo(716, 80);
+          c.closePath();
+          c.fillStyle = '#E2A76F';
+          c.fill();
+
+          // mouth
+          c.fillStyle = '#EE9A4D';
+          c.fillRect(697, 85, 26, 9);
+    },
+
+    drawrandom: function(){
+        // unmanaged figure.
+          // For left eye.
+          c.beginPath();
+          c.arc(this.lerandX, this.lerandY, 50, 0, Math.PI * 2, false);
+          c.fillStyle = 'white';
+          c.fill();
+
+          // For right eye.
+          c.beginPath();
+          c.arc(this.rerandX,this.rerandY, 50, 0, Math.PI * 2, false);
+          c.fillStyle = 'white';
+          c.fill();
+
+          // For left eye ball.
+          c.beginPath();
+          c.arc(this.lebrandX,this.lebrandY, 10, 0, Math.PI * 2, false);
+          c.fillStyle = 'black';
+          c.fill();
+
+
+          // For right eye ball.
+          c.beginPath();
+          c.arc(this.rebrandX,this.rebrandY, 10, 0, Math.PI * 2, false);
+          c.fillStyle = 'black';
+          c.fill();
+
+          // For nose.
+          c.beginPath();
+          c.moveTo(this.nrandX, this.nrandY);
+          c.lineTo(this.nrandX - 50, this.nrandY + 100);
+          c.lineTo(this.nrandX + 50, this.nrandY + 100);
+          c.closePath();
+          c.fillStyle = '#E2A76F';
+          c.fill();
+
+          //For mouth.
+          c.fillStyle = '#EE9A4D';
+          c.fillRect(this.mrandX, this.mrandY, 200, 75);
+    }
+  };
+
+  // declaring constant comparing variables.
+  var Game = {
+    Score: 0
+  }
+
+
+    var theGame = Object.create(Game); 
+    var hero = Object.create(Hero);
+
+
+    $(document).ready(function(){
+        alert('Click one of the figure to move.')
+        setInterval(mainLoop, 50);
+      })
+
+    function mainLoop() {
+      //console.log(theGame.Score);
+      //console.log(exactX);
+      //console.log(hero.lerandX);
+      //console.log(exactY);
+      //console.log(hero.lerandY);
+
+      // clears the screen.
+      clear_screen()
+      c.fillText("Score : " + theGame.Score, 8, 13);
+
+      // draw new screen.
+      hero.drawbackground()
+      hero.drawmodel()
+      hero.drawrandom()
+
+      // checks the screen.
+      positionchecker()
+    }
+
+    function clear_screen() {
+    c.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // checks whether the figure is in exact position or not.
+    var lebreaker = 0;
+    var lebbreaker = 0;
+    var rebreaker = 0;
+    var rebbreaker = 0;
+    var nberaker = 0;
+    var mbreaker = 0;
+
+    function positionchecker(){
+      if (currentfig == "lefteye"){
+
+        var checkerX = hero.lerandX;
+        var checkerY = hero.lerandY;
+        var exactX = 275;
+        var exactY = 250;
+
+        if( checkerX == exactX && checkerY == exactY && lebreaker == 0){
+          theGame.Score += 200;
+          alert('Congratulations..! Left eye gets its position!');
+          alert(' Your Score is ' + theGame.Score);
+          lebreaker += 1;
+          lefteyedist = 0;
+        }
+      }
+
+      else if(currentfig == "lefteyeball"){
+          var checkerX = hero.lebrandX;
+          var checkerY = hero.lebrandY;
+          var exactX = 275;
+          var exactY = 250;
+
+        if( checkerX == exactX && checkerY == exactY && lebbreaker == 0){
+          theGame.Score += 200;
+          alert('Congratulations..! Left eye ball gets its position!');
+          alert(' Your Score is ' + theGame.Score);
+          lebbreaker += 1;
+        }   
+      }
+
+      else if(currentfig == "righteye"){
+          var checkerX = hero.rerandX;
+          var checkerY = hero.rerandY;
+          var exactX = 525;
+          var exactY = 250;
+
+        if( checkerX == exactX && checkerY == exactY && rebreaker == 0){
+          theGame.Score += 200;
+          alert('Congratulations..! Right eye gets its position!');
+          alert(' Your Score is ' + theGame.Score);
+          rebreaker += 1;
+        }  
+      }
+
+      else if(currentfig == "righteyeball"){
+          var checkerX = hero.rebrandX;
+          var checkerY = hero.rebrandY;
+          var exactX = 525;
+          var exactY = 250;
+
+        if( checkerX == exactX && checkerY == exactY && rebbreaker == 0){
+          theGame.Score += 200;
+          alert('Congratulations..! Right eye ball gets its position!');
+          alert(' Your Score is ' + theGame.Score);
+          rebbreaker += 1;
+        } 
+      }
+
+      else if(currentfig == "nose") {
+          var checkerX = hero.nrandX;
+          var checkerY = hero.nrandY;
+          var exactX = 400;
+          var exactY = 275;
+
+        if( checkerX == exactX && checkerY == exactY && nberaker == 0){
+          theGame.Score += 200;
+          alert('Congratulations..! Nose gets its position!');
+          alert(' Your Score is ' + theGame.Score);
+          nberaker += 1;
+        } 
+      }
+
+      else if(currentfig == "mouth"){
+          var checkerX = hero.mrandX;
+          var checkerY = hero.mrandY;
+          var exactX = 300;
+          var exactY = 425;
+
+        if( checkerX == exactX && checkerY == exactY && mbreaker == 0){
+          theGame.Score += 200;
+          alert('Congratulations..! Mouth gets its position!');
+          alert(' Your Score is ' + theGame.Score);
+          mbreaker += 1;
+        } 
+      }
+
+      else{
+        console.log("Click one of the figure to start movement.");
+      }
+    }
+
+
+    function keyPressedHandler(e) {
+        // if user press enter, gives help.
+      if(e.keyCode == 13){
+          c.beginPath();
+          c.arc(275,250, 50, 0, Math.PI * 2, false);
+          c.fillStyle = 'white'
+          c.fill();
+
+          c.beginPath();
+          c.arc(275,250, 10, 0, Math.PI * 2, false);
+          c.fillStyle = 'black'
+          c.fill();
+
+          c.beginPath();
+          c.arc(525,250, 50, 0, Math.PI * 2, false);
+          c.fillStyle = 'white'
+          c.fill();
+
+          c.beginPath();
+          c.arc(525,250, 10, 0, Math.PI * 2, false);
+          c.fillStyle = 'black'
+          c.fill();
+
+          c.beginPath();
+          c.moveTo(400, 275);
+          c.lineTo(350, 375);
+          c.lineTo(450, 375);
+          c.closePath();
+          c.fillStyle = '#E2A76F';
+          c.fill();
+
+          c.fillStyle = '#EE9A4D';
+          c.fillRect(300, 425, 200, 75);
+      }
+
+      // else move the selected figure.
+      else{
+      if (currentfig == "lefteye"){
+        switch(e.keyCode) {
+            case 37:
+                hero.leleftHandler();
+                break;
+            case 38:
+                hero.leupHandler();
+                break;
+            case 39:
+                hero.lerightHandler();
+                break;
+            case 40:
+                hero.ledownHandler();
+                break;  
+        }
+      }
+
+      else if(currentfig == "lefteyeball"){
+          switch(e.keyCode) {
+            case 37:
+                hero.lebleftHandler()
+                break;
+            case 38:
+                hero.lebupHandler()
+                break;
+            case 39:
+                hero.lebrightHandler()
+                break;
+            case 40:
+                hero.lebdownHandler()
+                break;  
+        }   
+      }
+
+      else if(currentfig == "righteye"){
+          switch(e.keyCode) {
+            case 37:
+                hero.releftHandler()
+                break;
+            case 38:
+                hero.reupHandler()
+                break;
+            case 39:
+                hero.rerightHandler()
+                break;
+            case 40:
+                hero.redownHandler()
+                break;  
+        }  
+      }
+
+      else if(currentfig == "righteyeball"){
+          switch(e.keyCode) {
+            case 37:
+                hero.rebleftHandler()
+                break;
+            case 38:
+                hero.rebupHandler()
+                break;
+            case 39:
+                hero.rebrightHandler()
+                break;
+            case 40:
+                hero.rebdownHandler()
+                break;  
+        }
+      }
+
+      else if(currentfig == "nose") {
+          switch(e.keyCode) {
+            case 37:
+                hero.nleftHandler()
+                break;
+            case 38:
+                hero.nupHandler()
+                break;
+            case 39:
+                hero.nrightHandler()
+                break;
+            case 40:
+                hero.ndownHandler()
+                break;  
+        } 
+      }
+
+      else if(currentfig == "mouth"){
+          switch(e.keyCode) {
+            case 37:
+                hero.mleftHandler()
+                break;
+            case 38:
+                hero.mupHandler()
+                break;
+            case 39:
+                hero.mrightHandler()
+                break;
+            case 40:
+                hero.mdownHandler()
+                break;  
+        }
+      }
+
+      else{
+        console.log("Click one of the figure to start movement.");
+      }
+    }
+    }
+
+
+    function clickReporter(e) {
+      var clickx = e.clientX;
+      var clicky = e.clientY;
+      console.log('clicked at ' + clickx + ', ' + clicky);
+
+      var lefteyedist = distancefmla(hero.lerandX, hero.lerandY, clickx, clicky);
+      var lefteyeballdist = distancefmla(hero.lebrandX, hero.lebrandY, clickx, clicky);
+      var righteyedist = distancefmla(hero.rerandX, hero.rerandY, clickx, clicky);
+      var righteyeballdist = distancefmla(hero.rebrandX, hero.rebrandY, clickx, clicky);
+      var nosedist = distancefmla(hero.nrandX, hero.nrandY, clickx, clicky);
+      var mouthdist = distancefmla(hero.mrandX, hero.mrandY, clickx, clicky);
+
+      // check.
+      //alert(lefteyedist);
+      //alert(lefteyeballdist);
+      //alert(righteyedist);
+      //alert(righteyeballdist);
+      //alert(nosedist);
+      //alert(mouthdist);
+
+      if (lefteyedist < lefteyeballdist && lefteyedist < righteyedist && lefteyedist < righteyeballdist && lefteyedist < nosedist && lefteyedist < mouthdist){
+        currentfig = "lefteye";
+        alert('You have selected left eye.');
+      }
+      else if (lefteyeballdist < lefteyedist && lefteyeballdist < righteyedist && lefteyeballdist < righteyeballdist && lefteyeballdist < nosedist && lefteyeballdist < mouthdist){
+        currentfig = "lefteyeball";
+        alert('You have selected left eye ball.');
+      }
+      else if (righteyedist < lefteyeballdist && righteyedist < lefteyedist && righteyedist < righteyeballdist && righteyedist < nosedist && righteyedist < mouthdist){
+        currentfig = "righteye";
+        alert('You have selected right eye.');
+      }
+      else if(righteyeballdist < lefteyedist && righteyeballdist < righteyedist && righteyeballdist < lefteyeballdist && righteyeballdist < nosedist && righteyeballdist < mouthdist){
+        currentfig = "righteyeball";
+        alert('You have selected right eye ball.');
+      }
+      else if(nosedist < lefteyeballdist && nosedist < righteyedist && nosedist < righteyeballdist && nosedist < lefteyedist && nosedist < mouthdist){
+        currentfig = "nose";
+        alert('You have selected nose.');
+      }
+      else if(mouthdist < lefteyeballdist && mouthdist < righteyedist && mouthdist < righteyeballdist && mouthdist < nosedist && mouthdist < lefteyedist){
+        currentfig = "mouth";
+        alert('You have selected mouth.');
+      }
+      else {
+        console.log('Invalid selection');
+      }
+    }
+
+    function distancefmla(x1,y1,x2,y2){
+      var Xvalue = x2 - x1;
+      var Yvalue = y2 - y1;
+
+      var sqX = Math.pow(Xvalue,2);
+      var sqY = Math.pow(Yvalue,2);
+
+      var totlsq = sqY + sqX;
+
+      return Math.sqrt(totlsq); // avoids the problem of NaN.
+    }
+
+</script>
